@@ -42,3 +42,6 @@ LABEL \
     org.opencontainers.image.created=${BUILD_DATE} \
     org.opencontainers.image.revision=${BUILD_REF} \
     org.opencontainers.image.version=${BUILD_VERSION}
+    MQTT_HOST=$(bashio::services mqtt "host")
+    MQTT_USER=$(bashio::services mqtt "username")
+    MQTT_PASSWORD=$(bashio::services mqtt "password")

@@ -4,7 +4,6 @@ version: dev
 slug: keypad-app
 description: Keypad App add-on by CJ Ramseyer
 url: https://github.com/cjramseyer/keypad-app
-codenotary: cj@ramseyer.org
 init: false
 arch:
   - aarch64
