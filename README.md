@@ -108,7 +108,7 @@ SOFTWARE.
 [amd64-shield]: https://img.shields.io/badge/amd64-yes-green.svg
 [armhf-shield]: https://img.shields.io/badge/armhf-no-red.svg
 [armv7-shield]: https://img.shields.io/badge/armv7-no-red.svg
-[commits-shield]: https://img.shields.io/github/commit-activity/y/hassio-addons/addon-example.svg
+[commits-shield]: https://img.shields.io/github/commit-activity/y/hassio-addons/addon-keypad-app.svg
 [commits]: https://github.com/cjramseyer/keypad-app/commits/main
 [contributors]: https://github.com/cjramseyer/keypad-app/graphs/contributors
 [discord-ha]: https://discord.gg/c5DvZ4e
@@ -130,6 +130,6 @@ SOFTWARE.
 [patreon]: https://www.patreon.com/cjramseyer
 [project-stage-shield]: https://img.shields.io/badge/project%20stage-development-red.svg
 [reddit]: https://reddit.com/r/homeassistant
-[releases-shield]: https://img.shields.io/github/release/hassio-addons/addon-example.svg
+[releases-shield]: https://img.shields.io/github/v/release/hassio-addons/addon-keypad-app.svg
 [releases]: https://github.com/cjramseyer/keypad-app/releases
 [repository]: https://github.com/cjramseyer/keypad-app/repository
