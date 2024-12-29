@@ -1,4 +1,4 @@
-# Home Assistant Community Add-on: Example
+# Home Assistant Community Add-on: Keypad-App
 
 This is an example add-on for Home Assistant. When started, it displays a
 random quote every 5 seconds.
@@ -26,12 +26,12 @@ comparison to installing any other Home Assistant add-on.
    [![Open this add-on in your Home Assistant instance.][addon-badge]][addon]
 
 1. Click the "Install" button to install the add-on.
-1. Start the "Example" add-on.
-1. Check the logs of the "Example" add-on to see it in action.
+1. Start the "Keypad-App" add-on.
+1. Check the logs of the "Keypad-App" add-on to see it in action.
 
 ## Configuration
 
-Eventought this add-on is just an example add-on, it does come with some
+Even though this add-on is just an example add-on, it does come with some
 configuration options to play around with.
 
 **Note**: _Remember to restart the add-on when the configuration is changed._
@@ -40,7 +40,6 @@ Example add-on configuration:
 
 ```yaml
 log_level: info
-seconds_between_quotes: 5
 ```
 
 ### Option: `log_level`
@@ -60,12 +59,6 @@ Please note that each level automatically includes log messages from a
 more severe level, e.g., `debug` also shows `info` messages. By default,
 the `log_level` is set to `info`, which is the recommended setting unless
 you are troubleshooting.
-
-### Option: `seconds_between_quotes`
-
-Sets the number of seconds between the output of each quote. The value
-must be between `1` and `120` seconds. This value is set to `5` seconds by
-default.
 
 ## Changelog & Releases
 
@@ -97,7 +90,7 @@ You could also [open an issue here][issue] GitHub.
 
 ## Authors & contributors
 
-The original setup of this repository is by [Franck Nijhof][frenck].
+The original setup of this repository is by [CJ Ramseyer][cjramseyer].
 
 For a full list of all authors and contributors,
 check [the contributor's page][contributors].
