@@ -60,9 +60,9 @@ Oh, and if we ever meet, I'm happy to buy you a beer :)
 
 ## Contact information
 
-Please contact me, Franck Nijhof, directly on:
+Please contact me, CJ Ramseyer, directly on:
 
-security@frenck.dev (not for support!)
+cjr351@gmail.com (not for support!)
 
 GPG Fingerprint: `731C 60D6 80E6 E850 F31C 2E88 AB33 ADAC E710 1952`
 
