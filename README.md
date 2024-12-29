@@ -14,12 +14,12 @@
 ![Project Maintenance][maintenance-shield]
 [![GitHub Activity][commits-shield]][commits]
 
-//[![Discord][discord-shield]][discord]
-//[![Community Forum][forum-shield]][forum]
+[![Discord][discord-shield]][discord]
+[![Community Forum][forum-shield]][forum]
 
-[![Sponsor Frenck via GitHub Sponsors][github-sponsors-shield]][github-sponsors]
+[![Sponsor CJ via GitHub Sponsors][github-sponsors-shield]][github-sponsors]
 
-[![Support Frenck on Patreon][patreon-shield]][patreon]
+[![Support CJ on Patreon][patreon-shield]][patreon]
 
 Example add-on by Community Home Assistant add-ons.
 
@@ -128,7 +128,7 @@ SOFTWARE.
 [maintenance-shield]: https://img.shields.io/maintenance/yes/2024.svg
 [patreon-shield]: https://frenck.dev/wp-content/uploads/2019/12/patreon.png
 [patreon]: https://www.patreon.com/cjramseyer
-[project-stage-shield]: https://img.shields.io/badge/project%20stage-production%20ready-brightgreen.svg
+[project-stage-shield]: https://img.shields.io/badge/project%20stage-development-red.svg
 [reddit]: https://reddit.com/r/homeassistant
 [releases-shield]: https://img.shields.io/github/release/hassio-addons/addon-example.svg
 [releases]: https://github.com/cjramseyer/keypad-app/releases
