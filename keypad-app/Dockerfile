@@ -5,6 +5,10 @@ FROM ${BUILD_FROM}
 # Copy root filesystem
 COPY rootfs /
 
+# Copy data for add-on
+COPY run.sh /
+RUN chmod a+x /run.sh
+
 # Setup base
 RUN apk add --no-cache \
     coreutils=9.5-r1 \
