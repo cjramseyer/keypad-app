@@ -14,8 +14,8 @@
 ![Project Maintenance][maintenance-shield]
 [![GitHub Activity][commits-shield]][commits]
 
-[![Discord][discord-shield]][discord]
-[![Community Forum][forum-shield]][forum]
+//[![Discord][discord-shield]][discord]
+//[![Community Forum][forum-shield]][forum]
 
 [![Sponsor Frenck via GitHub Sponsors][github-sponsors-shield]][github-sponsors]
 
@@ -104,10 +104,10 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
-[aarch64-shield]: https://img.shields.io/badge/aarch64-yes-green.svg
+[aarch64-shield]: https://img.shields.io/badge/aarch64-no-red.svg
 [amd64-shield]: https://img.shields.io/badge/amd64-yes-green.svg
 [armhf-shield]: https://img.shields.io/badge/armhf-no-red.svg
-[armv7-shield]: https://img.shields.io/badge/armv7-yes-green.svg
+[armv7-shield]: https://img.shields.io/badge/armv7-no-red.svg
 [commits-shield]: https://img.shields.io/github/commit-activity/y/hassio-addons/addon-example.svg
 [commits]: https://github.com/cjramseyer/keypad-app/commits/main
 [contributors]: https://github.com/cjramseyer/keypad-app/graphs/contributors
@@ -121,7 +121,7 @@ SOFTWARE.
 [github-actions-shield]: https://github.com/cjramseyer/keypad-app/workflows/CI/badge.svg
 [github-actions]: https://github.com/cjramseyer/keypad-app/actions
 [github-sponsors-shield]: https://frenck.dev/wp-content/uploads/2019/12/github_sponsor.png
-[github-sponsors]: https://github.com/sponsors/frenck
+[github-sponsors]: https://github.com/sponsors/cjramseyer
 [i386-shield]: https://img.shields.io/badge/i386-no-red.svg
 [issue]: https://github.com/cjramseyer/keypad-app/issues
 [license-shield]: https://img.shields.io/github/license/hassio-addons/addon-example.svg
