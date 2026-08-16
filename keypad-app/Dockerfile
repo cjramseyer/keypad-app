@@ -3,6 +3,7 @@ ARG BUILD_FROM=ghcr.io/hassio-addons/base:17.0.1
 FROM ${BUILD_FROM}
 
 # Install Python and build tools needed for pip packages
+# hadolint ignore=DL3018
 RUN apk add --no-cache \
     python3 \
     py3-pip \
