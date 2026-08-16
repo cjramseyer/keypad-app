@@ -9,11 +9,13 @@ export MQTT_USER
 export MQTT_PASSWORD
 export HA_EVENT_TOPIC
 export API_KEY
+export INGRESS_PATH
 
 LOG_LEVEL=$(bashio::config 'log_level')
 MQTT_TOPIC_PREFIX=$(bashio::config 'mqtt_topic_prefix')
 HA_EVENT_TOPIC=$(bashio::config 'ha_event_topic')
 API_KEY=$(bashio::config 'api_key')
+INGRESS_PATH=$(bashio::addon 'ingress_entry')
 
 # Prefer the HA-managed MQTT broker; fall back to manual config
 if bashio::services.available "mqtt"; then

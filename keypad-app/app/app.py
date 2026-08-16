@@ -86,4 +86,13 @@ async def api_get_history(limit: int = 50):
 
 
 if __name__ == "__main__":
-    uvicorn.run(app, host="0.0.0.0", port=8000, log_level=LOG_LEVEL.lower())
+    ingress_path = os.environ.get("INGRESS_PATH", "")
+    uvicorn.run(
+        app,
+        host="0.0.0.0",
+        port=8000,
+        root_path=ingress_path,
+        proxy_headers=True,
+        forwarded_allow_ips="*",
+        log_level=LOG_LEVEL.lower(),
+    )
