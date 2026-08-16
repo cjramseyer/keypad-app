@@ -4,6 +4,7 @@ version: dev
 slug: keypad-app
 description: Keypad management app — store and validate user PIN codes via MQTT and fire Home Assistant events
 url: https://github.com/cjramseyer/keypad-app
+image: ghcr.io/cjramseyer/keypad-app/{arch}
 init: false
 arch:
   - aarch64
