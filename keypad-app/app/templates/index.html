@@ -55,7 +55,7 @@
       <li>
         <span class="user-name">{{ user.name }}</span>
         <span class="user-code" title="PIN is set">&#128274;</span>
-        <form method="post" action="/users/{{ user.id }}/delete" style="display:inline" onsubmit="return confirm('Remove {{ user.name }}?')">
+        <form method="post" action="{{ request.url_for('delete_user', user_id=user.id) }}" style="display:inline" onsubmit="return confirm('Remove {{ user.name }}?')">
           <button class="btn btn-danger" type="submit">Remove</button>
         </form>
       </li>
@@ -69,7 +69,7 @@
   <!-- Add User Panel -->
   <section>
     <h2>Add User</h2>
-    <form method="post" action="/users/add">
+    <form method="post" action="{{ request.url_for('add_user') }}">
       <div class="form-row">
         <div>
           <label for="name">Name</label>

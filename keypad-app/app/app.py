@@ -48,30 +48,30 @@ async def dashboard(request: Request):
 
 
 @app.post("/users/add")
-async def add_user(name: str = Form(...), code: str = Form(...)):
+async def add_user(request: Request, name: str = Form(...), code: str = Form(...)):
     if not name.strip():
         raise HTTPException(status_code=400, detail="Name is required")
     if not code.strip().isdigit():
         raise HTTPException(status_code=400, detail="Code must be digits only")
     storage.add_user(name.strip(), code.strip())
-    return RedirectResponse(url="/", status_code=303)
+    return RedirectResponse(url=str(request.url_for("dashboard")), status_code=303)
 
 
 @app.post("/users/{user_id}/delete")
-async def delete_user(user_id: str):
+async def delete_user(request: Request, user_id: str):
     if not storage.delete_user(user_id):
         raise HTTPException(status_code=404, detail="User not found")
-    return RedirectResponse(url="/", status_code=303)
+    return RedirectResponse(url=str(request.url_for("dashboard")), status_code=303)
 
 
 @app.post("/users/{user_id}/update")
-async def update_user(user_id: str, name: str = Form(None), code: str = Form(None)):
+async def update_user(request: Request, user_id: str, name: str = Form(None), code: str = Form(None)):
     if code and not code.strip().isdigit():
         raise HTTPException(status_code=400, detail="Code must be digits only")
     user = storage.update_user(user_id, name=name, code=code)
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
-    return RedirectResponse(url="/", status_code=303)
+    return RedirectResponse(url=str(request.url_for("dashboard")), status_code=303)
 
 
 # JSON API endpoints — protected by API key when api_key option is set
