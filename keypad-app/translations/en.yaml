@@ -3,3 +3,24 @@ configuration:
   log_level:
     name: Log level
     description: The amount of logging the add-on should do.
+  mqtt_topic_prefix:
+    name: MQTT topic prefix
+    description: "Topic prefix for keypad events. Devices must publish codes to <prefix>/<device_id>/code."
+  mqtt_host:
+    name: MQTT host
+    description: MQTT broker hostname or IP. Not required when using the Home Assistant Mosquitto add-on.
+  mqtt_port:
+    name: MQTT port
+    description: MQTT broker port (default 1883).
+  mqtt_user:
+    name: MQTT username
+    description: MQTT broker username. Leave blank if using the Home Assistant Mosquitto add-on.
+  mqtt_password:
+    name: MQTT password
+    description: MQTT broker password. Leave blank if using the Home Assistant Mosquitto add-on.
+  ha_event_topic:
+    name: HA event MQTT topic
+    description: MQTT topic where validated keypad events are published for use in Home Assistant automations.
+  api_key:
+    name: API key
+    description: "Optional. Requires this value in the X-API-Key header on /api/users and /api/history. Leave blank for open access."

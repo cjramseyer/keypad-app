@@ -18,12 +18,18 @@ Even better: You could submit a pull request with a fix / new feature!
 
 ## Pull request process
 
-1. Search our repository for open or closed [pull requests][prs] that relates
-   to your submission. You don't want to duplicate effort.
+1. Search our repository for open or closed [pull requests][prs] that relate
+   to your submission to avoid duplicate effort.
 
-1. You may merge the pull request in once you have the sign-off of two other
-   developers, or if you do not have permission to do that, you may request
-   the second reviewer to merge it for you.
+1. Open pull requests are reviewed by the developer (@cjramseyer) and
+   considered for inclusion in a future update. There is no guaranteed
+   timeline for review, but all submissions are read and appreciated.
 
-[github]: https://github.com/hassio-addons/addon-example/issues
-[prs]: https://github.com/hassio-addons/addon-example/pulls
+1. To improve the chances of your PR being accepted, keep the scope focused,
+   include a clear description of the problem it solves, and reference any
+   related issue.
+
+1. Once reviewed and approved, the developer will merge the pull request.
+
+[github]: https://github.com/cjramseyer/keypad-app/issues
+[prs]: https://github.com/cjramseyer/keypad-app/pulls

@@ -11,6 +11,27 @@ on:
       - synchronize
   workflow_dispatch:
 
+permissions:
+  contents: read
+  actions: read
+  packages: read
+  security-events: write
+
 jobs:
   workflows:
     uses: hassio-addons/workflows/.github/workflows/addon-ci.yaml@main
+
+  python-tests:
+    name: Python Tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install dependencies
+        run: pip install -r requirements.txt -r requirements-dev.txt
+        working-directory: keypad-app
+      - name: Run tests
+        run: python -m pytest tests/ --tb=short -v
+        working-directory: keypad-app/app

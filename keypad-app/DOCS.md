@@ -1,103 +1,171 @@
-# Home Assistant Community Add-on: Keypad-App
+# Home Assistant Add-on: Keypad Manager
 
-This is an example add-on for Home Assistant. When started, it displays a
-random quote every 5 seconds.
+Keypad Manager is a Python-based Home Assistant add-on that stores and
+validates user PIN codes, listens for keypad input over MQTT, and fires
+Home Assistant events when a code is entered — valid or invalid.
 
-It shows off several features and structures like:
+## How it works
 
-- Full blown GitHub repository.
-- General Dockerfile structure and setup.
-- The use of the `config.yaml` and `build.yaml` files.
-- General shell scripting structure (`run.sh`).
-- Quality assurance using CodeClimate.
-- Continuous integration and deployment using GitLab.
-- Usage of the Community Home Assistant Add-ons build environment.
-- Small use of the Bash function library in our base images.
-- The use of Docker label schema.
+1. A keypad device publishes a PIN to the MQTT topic
+   `<prefix>/<device_id>/code` (e.g. `keypad/front-door/code`).
+2. The add-on validates the PIN against the stored user list.
+3. It publishes the result to two MQTT topics:
+   - `<prefix>/event` — general keypad event
+   - `homeassistant/event/keypad_entry` — consumed by HA automations
+4. The entry is recorded in the history log visible in the web dashboard.
 
 ## Installation
 
-The installation of this add-on is pretty straightforward and not different in
-comparison to installing any other Home Assistant add-on.
-
-1. Click the Home Assistant My button below to open the add-on on your Home
-   Assistant instance.
-
-   [![Open this add-on in your Home Assistant instance.][addon-badge]][addon]
-
-1. Click the "Install" button to install the add-on.
-1. Start the "Keypad-App" add-on.
-1. Check the logs of the "Keypad-App" add-on to see it in action.
+1. In Home Assistant, go to **Settings → Add-ons → Add-on Store**.
+2. Click the menu (⋮) and choose **Repositories**.
+3. Add `https://github.com/cjramseyer/keypad-app` and click **Add**.
+4. Find **Keypad Manager** in the store and click **Install**.
+5. Configure the add-on (see below), then click **Start**.
+6. Open the web UI via **Open Web UI** or the sidebar panel.
 
 ## Configuration
 
-Even though this add-on is just an example add-on, it does come with some
-configuration options to play around with.
+**Note**: _Restart the add-on after changing any configuration option._
 
-**Note**: _Remember to restart the add-on when the configuration is changed._
-
-Example add-on configuration:
+Example configuration:
 
 ```yaml
 log_level: info
+mqtt_topic_prefix: keypad
+mqtt_host: ""
+mqtt_port: 1883
+mqtt_user: ""
+mqtt_password: ""
 ```
 
 ### Option: `log_level`
 
-The `log_level` option controls the level of log output by the add-on and can
-be changed to be more or less verbose, which might be useful when you are
-dealing with an unknown issue. Possible values are:
+Controls the verbosity of add-on log output. Possible values:
 
-- `trace`: Show every detail, like all called internal functions.
-- `debug`: Shows detailed debug information.
-- `info`: Normal (usually) interesting events.
-- `warning`: Exceptional occurrences that are not errors.
-- `error`: Runtime errors that do not require immediate action.
-- `fatal`: Something went terribly wrong. Add-on becomes unusable.
+- `trace`: Every internal function call.
+- `debug`: Detailed debug information.
+- `info`: Normal events (recommended default).
+- `notice`: Significant but non-error events.
+- `warning`: Unexpected but recoverable situations.
+- `error`: Runtime errors that need attention.
+- `fatal`: Add-on is no longer functional.
 
-Please note that each level automatically includes log messages from a
-more severe level, e.g., `debug` also shows `info` messages. By default,
-the `log_level` is set to `info`, which is the recommended setting unless
-you are troubleshooting.
+### Option: `mqtt_topic_prefix`
+
+The MQTT topic prefix used for all keypad messages. Defaults to `keypad`.
+
+Keypad devices must publish PIN codes to `<prefix>/<device_id>/code`.
+The add-on publishes events to `<prefix>/event`.
+
+### Option: `mqtt_host`
+
+Hostname or IP address of your MQTT broker.
+
+**Leave blank** when using the Home Assistant Mosquitto add-on — the
+add-on will automatically connect to it using the `mqtt` service.
+
+### Option: `mqtt_port`
+
+Port of your MQTT broker. Defaults to `1883`.
+
+### Option: `mqtt_user`
+
+MQTT broker username. Leave blank when using the Mosquitto add-on.
+
+### Option: `mqtt_password`
+
+MQTT broker password. Leave blank when using the Mosquitto add-on.
+
+## MQTT topics
+
+| Topic                              | Direction | Description                        |
+| ---------------------------------- | --------- | ---------------------------------- |
+| `<prefix>/<device_id>/code`        | Subscribe | Keypad device publishes a PIN here |
+| `<prefix>/event`                   | Publish   | Result of every code attempt       |
+| `homeassistant/event/keypad_entry` | Publish   | Same payload, for HA automations   |
+
+### Event payload
+
+```json
+{
+  "event_type": "keypad_code_entered",
+  "device_id": "front-door",
+  "user_id": "a1b2c3...",
+  "user_name": "Jane Doe",
+  "valid": true
+}
+```
+
+For invalid codes, `event_type` is `keypad_invalid_code`, and `user_id`/`user_name` are omitted.
+
+## Home Assistant automation example
+
+Trigger an action whenever a valid code is entered:
+
+```yaml
+automation:
+  - alias: "Keypad — valid entry"
+    trigger:
+      - platform: mqtt
+        topic: homeassistant/event/keypad_entry
+    condition:
+      - condition: template
+        value_template: "{{ trigger.payload_json.valid }}"
+    action:
+      - service: notify.mobile_app
+        data:
+          message: "{{ trigger.payload_json.user_name }} entered a valid code on {{ trigger.payload_json.device_id }}."
+```
+
+## REST API
+
+The add-on exposes a JSON API alongside the web dashboard on port 8000.
+
+| Method | Path                    | Description               |
+| ------ | ----------------------- | ------------------------- |
+| `GET`  | `/api/users`            | List all registered users |
+| `GET`  | `/api/history?limit=50` | Recent entry history      |
+
+## Web dashboard
+
+Open the dashboard via **Settings → Add-ons → Keypad Manager → Open Web UI**
+or the **Keypad Manager** sidebar panel (if ingress is enabled).
+
+From the dashboard you can:
+
+- Add a user with a name and numeric PIN code.
+- Remove an existing user.
+- View the last 50 entry events with timestamps, device IDs, and pass/fail status.
+
+## Data persistence
+
+User records and entry history are stored as JSON files in the add-on's
+persistent data volume (`/data/users.json` and `/data/history.json`).
+They survive add-on restarts and updates.
 
 ## Changelog & Releases
 
-This repository keeps a change log using [GitHub's releases][releases]
-functionality.
+Releases follow [Semantic Versioning][semver] (`MAJOR.MINOR.PATCH`):
 
-Releases are based on [Semantic Versioning][semver], and use the format
-of `MAJOR.MINOR.PATCH`. In a nutshell, the version will be incremented
-based on the following:
-
-- `MAJOR`: Incompatible or major changes.
-- `MINOR`: Backwards-compatible new features and enhancements.
-- `PATCH`: Backwards-compatible bugfixes and package updates.
+- `MAJOR`: Breaking changes to configuration or MQTT topics.
+- `MINOR`: New backwards-compatible features.
+- `PATCH`: Bug fixes and dependency updates.
 
 ## Support
 
-Got questions?
-
-You have several options to get them answered:
-
-- The [Home Assistant Community Add-ons Discord chat server][discord] for add-on
-  support and feature requests.
-- The [Home Assistant Discord chat server][discord-ha] for general Home
-  Assistant discussions and questions.
-- The Home Assistant [Community Forum][forum].
-- Join the [Reddit subreddit][reddit] in [/r/homeassistant][reddit]
-
-You could also [open an issue here][issue] GitHub.
+- Open an [issue on GitHub][issue] for bug reports or feature requests.
+- [Home Assistant Community Forum][forum] for general questions.
 
 ## Authors & contributors
 
-The original setup of this repository is by [CJ Ramseyer][cjramseyer].
+Created by [CJ Ramseyer][cjramseyer].
 
-For a full list of all authors and contributors,
-check [the contributor's page][contributors].
-
-## License
-
-MIT License
+[contributors]: https://github.com/cjramseyer/keypad-app/graphs/contributors
+[cjramseyer]: https://github.com/cjramseyer
+[forum]: https://community.home-assistant.io
+[issue]: https://github.com/cjramseyer/keypad-app/issues
+[releases]: https://github.com/cjramseyer/keypad-app/releases
+[semver]: https://semver.org
 
 Copyright (c) 2024 CJ Ramseyer
 
