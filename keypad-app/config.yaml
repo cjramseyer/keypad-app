@@ -1,6 +1,6 @@
 ---
 name: Keypad Mgmt
-version: dev
+version: "1.0.0"
 slug: keypad-app
 description: Keypad management app — store and validate user PIN codes via MQTT and fire Home Assistant events
 url: https://github.com/cjramseyer/keypad-app
