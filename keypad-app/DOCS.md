@@ -78,11 +78,11 @@ MQTT broker password. Leave blank when using the Mosquitto add-on.
 
 ## MQTT topics
 
-| Topic | Direction | Description |
-|---|---|---|
-| `<prefix>/<device_id>/code` | Subscribe | Keypad device publishes a PIN here |
-| `<prefix>/event` | Publish | Result of every code attempt |
-| `homeassistant/event/keypad_entry` | Publish | Same payload, for HA automations |
+| Topic                              | Direction | Description                        |
+| ---------------------------------- | --------- | ---------------------------------- |
+| `<prefix>/<device_id>/code`        | Subscribe | Keypad device publishes a PIN here |
+| `<prefix>/event`                   | Publish   | Result of every code attempt       |
+| `homeassistant/event/keypad_entry` | Publish   | Same payload, for HA automations   |
 
 ### Event payload
 
@@ -121,10 +121,10 @@ automation:
 
 The add-on exposes a JSON API alongside the web dashboard on port 8000.
 
-| Method | Path | Description |
-|---|---|---|
-| `GET` | `/api/users` | List all registered users |
-| `GET` | `/api/history?limit=50` | Recent entry history |
+| Method | Path                    | Description               |
+| ------ | ----------------------- | ------------------------- |
+| `GET`  | `/api/users`            | List all registered users |
+| `GET`  | `/api/history?limit=50` | Recent entry history      |
 
 ## Web dashboard
 
