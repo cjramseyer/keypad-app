@@ -9,7 +9,8 @@ body:
   - type: markdown
     attributes:
       value: |
-        Use this template for problems like the add-on failing to start, MQTT connection errors, or the web dashboard being unreachable.
+        Use this template for problems like the add-on failing to start,
+        MQTT connection errors, or the web dashboard being unreachable.
 
   - type: textarea
     id: problem

@@ -23,4 +23,6 @@ configuration:
     description: MQTT topic where validated keypad events are published for use in Home Assistant automations.
   api_key:
     name: API key
-    description: "Optional. Requires this value in the X-API-Key header on /api/users and /api/history. Leave blank for open access."
+    description: >-
+      Optional. Requires this value in the X-API-Key header on /api/users
+      and /api/history. Leave blank for open access.
