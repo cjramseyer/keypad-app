@@ -29,8 +29,6 @@ options:
   mqtt_password: ""
   ha_event_topic: homeassistant/event/keypad_entry
   api_key: ""
-  ha_event_topic: homeassistant/event/keypad_entry
-  api_key: ""
 schema:
   log_level: list(trace|debug|info|notice|warning|error|fatal)
   mqtt_topic_prefix: str
