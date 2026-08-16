@@ -18,10 +18,33 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
+
+class IngressPrefixMiddleware:
+    def __init__(self, app, ingress_path: str):
+        self.app = app
+        self.ingress_path = ingress_path.rstrip("/")
+
+    async def __call__(self, scope, receive, send):
+        if scope["type"] in {"http", "websocket"} and self.ingress_path:
+            path = scope.get("path", "")
+            if path == self.ingress_path or path.startswith(f"{self.ingress_path}/"):
+                stripped_path = path[len(self.ingress_path):] or "/"
+                if not stripped_path.startswith("/"):
+                    stripped_path = f"/{stripped_path}"
+
+                scope = {
+                    **scope,
+                    "path": stripped_path,
+                    "root_path": scope.get("root_path") or self.ingress_path,
+                }
+
+        await self.app(scope, receive, send)
+
 def create_app(
     *,
     data_dir: Optional[str] = None,
     templates_dir: Optional[str] = None,
+    ingress_path: Optional[str] = None,
     api_key: Optional[str] = None,
     mqtt_handler: Optional[KeypadMQTT] = None,
     storage: Optional[UserStorage] = None,
@@ -46,6 +69,10 @@ def create_app(
     app.state.storage = resolved_storage
     app.state.mqtt_handler = resolved_mqtt_handler
     app.state.templates = resolved_templates
+    app.state.ingress_path = ingress_path or ""
+
+    if ingress_path:
+        app.add_middleware(IngressPrefixMiddleware, ingress_path=ingress_path)
 
     @app.get("/", response_class=HTMLResponse)
     async def dashboard(request: Request):
@@ -93,7 +120,7 @@ def create_app(
 
 if __name__ == "__main__":
     ingress_path = os.environ.get("INGRESS_PATH", "")
-    app = create_app()
+    app = create_app(ingress_path=ingress_path)
     uvicorn.run(
         app,
         host="0.0.0.0",
