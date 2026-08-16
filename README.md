@@ -17,27 +17,26 @@
 [![Discord][discord-shield]][discord]
 [![Community Forum][forum-shield]][forum]
 
-[![Sponsor CJ via GitHub Sponsors][github-sponsors-shield]][github-sponsors]
-
-[![Support CJ on Patreon][patreon-shield]][patreon]
-
-Example add-on by Community Home Assistant add-ons.
+Keypad management add-on for Home Assistant.
 
 ## About
 
-This is a keypad management app for Home Assistant.  When running, enables the creation, storage, and management of keypad code for individual users.
+Keypad Manager lets you register users with numeric PIN codes, listen for
+keypad input over MQTT, and fire Home Assistant events on every code attempt.
 
-It shows off several features and structures like:
+**Key features:**
 
-- Full blown GitHub repository.
-- General Dockerfile structure and setup.
-- The use of the `config.yaml` and `build.yaml` files.
-- General structure on how to use S6 overlay with services.
-- Basic usage of Bashio.
-- Continuous integration and deployment using GitHub Actions.
-- Deployment to the GitHub Container registry.
-- Small use of the Bash function library in our base images.
-- The use of Docker label schema.
+- Register unlimited users, each with a unique numeric PIN.
+- Subscribes to `<prefix>/<device_id>/code` MQTT topics — works with any
+  MQTT-capable keypad (Z-Wave via MQTT, Zigbee2MQTT, ESPHome, etc.).
+- Publishes structured JSON events to `homeassistant/event/keypad_entry` for
+  use in HA automations.
+- Web dashboard (accessible via the HA sidebar) to manage users and browse
+  the entry history log.
+- JSON REST API at `/api/users` and `/api/history` for programmatic access.
+- Auto-connects to the Home Assistant Mosquitto add-on; falls back to a
+  manually configured broker.
+- Persistent storage — user records and history survive restarts.
 
 [:books: Read the full add-on documentation][docs]
 
@@ -56,35 +55,17 @@ You have several options to get them answered:
 
 You could also [open an issue here][issue] GitHub.
 
-## Contributing
-
-This is an active open-source project. We are always open to people who want to
-use the code or contribute to it.
-
-We have set up a separate document containing our
-[contribution guidelines](.github/CONTRIBUTING.md).
-
-Thank you for being involved! :heart_eyes:
-
 ## Authors & contributors
 
-The original setup of this repository is by [CJ Ramseyer][CJ].
+Created and maintained by [CJ Ramseyer][cjramseyer].
 
-For a full list of all authors and contributors,
-check [the contributor's page][contributors].
-
-## We have got some Home Assistant add-ons for you
-
-Want some more functionality to your Home Assistant instance?
-
-We have created multiple add-ons for Home Assistant. For a full list, check out
-our [GitHub Repository][repository].
+For a full list of all contributors, see the [contributor's page][contributors].
 
 ## License
 
 MIT License
 
-Copyright (c) 2024 CJ Ramseyer
+Copyright (c) 2024-2026 CJ Ramseyer
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -104,11 +85,11 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
-[aarch64-shield]: https://img.shields.io/badge/aarch64-no-red.svg
+[aarch64-shield]: https://img.shields.io/badge/aarch64-yes-green.svg
 [amd64-shield]: https://img.shields.io/badge/amd64-yes-green.svg
-[armhf-shield]: https://img.shields.io/badge/armhf-no-red.svg
-[armv7-shield]: https://img.shields.io/badge/armv7-no-red.svg
-[commits-shield]: https://img.shields.io/github/commit-activity/y/hassio-addons/addon-keypad-app.svg
+[armhf-shield]: https://img.shields.io/badge/armhf-yes-green.svg
+[armv7-shield]: https://img.shields.io/badge/armv7-yes-green.svg
+[commits-shield]: https://img.shields.io/github/commit-activity/y/cjramseyer/keypad-app.svg
 [commits]: https://github.com/cjramseyer/keypad-app/commits/main
 [contributors]: https://github.com/cjramseyer/keypad-app/graphs/contributors
 [discord-ha]: https://discord.gg/c5DvZ4e
@@ -122,14 +103,14 @@ SOFTWARE.
 [github-actions]: https://github.com/cjramseyer/keypad-app/actions
 [github-sponsors-shield]: https://frenck.dev/wp-content/uploads/2019/12/github_sponsor.png
 [github-sponsors]: https://github.com/sponsors/cjramseyer
-[i386-shield]: https://img.shields.io/badge/i386-no-red.svg
+[i386-shield]: https://img.shields.io/badge/i386-yes-green.svg
 [issue]: https://github.com/cjramseyer/keypad-app/issues
-[license-shield]: https://img.shields.io/github/license/hassio-addons/addon-example.svg
-[maintenance-shield]: https://img.shields.io/maintenance/yes/2024.svg
+[license-shield]: https://img.shields.io/github/license/cjramseyer/keypad-app.svg
+[maintenance-shield]: https://img.shields.io/maintenance/yes/2026.svg
 [patreon-shield]: https://frenck.dev/wp-content/uploads/2019/12/patreon.png
 [patreon]: https://www.patreon.com/cjramseyer
 [project-stage-shield]: https://img.shields.io/badge/project%20stage-development-red.svg
 [reddit]: https://reddit.com/r/homeassistant
-[releases-shield]: https://img.shields.io/github/v/release/hassio-addons/addon-keypad-app.svg
+[releases-shield]: https://img.shields.io/github/v/release/cjramseyer/keypad-app.svg
 [releases]: https://github.com/cjramseyer/keypad-app/releases
 [repository]: https://github.com/cjramseyer/keypad-app/repository

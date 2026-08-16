@@ -2,17 +2,23 @@ ARG BUILD_FROM=ghcr.io/hassio-addons/base:17.0.1
 # hadolint ignore=DL3006
 FROM ${BUILD_FROM}
 
-# Copy root filesystem
-COPY rootfs /
+# Install Python and build tools needed for pip packages
+RUN apk add --no-cache \
+    python3 \
+    py3-pip \
+    gcc \
+    musl-dev \
+    libffi-dev
 
-# Copy data for add-on
+# Copy app and install Python dependencies
+COPY requirements.txt /app/requirements.txt
+RUN pip3 install --no-cache-dir -r /app/requirements.txt
+
+COPY app/ /app/
+
+# Copy run script
 COPY run.sh /
 RUN chmod a+x /run.sh
-
-# Setup base
-RUN apk add --no-cache \
-    coreutils=9.5-r1 \
-    wget=1.25.0-r0
 
 # Build arguments
 ARG BUILD_ARCH
@@ -33,15 +39,12 @@ LABEL \
     maintainer="CJ Ramseyer <cjr351@gmail.com>" \
     org.opencontainers.image.title="${BUILD_NAME}" \
     org.opencontainers.image.description="${BUILD_DESCRIPTION}" \
-    org.opencontainers.image.vendor="Home Assistant Community Add-ons" \
+    org.opencontainers.image.vendor="CJ Ramseyer" \
     org.opencontainers.image.authors="CJ Ramseyer <cjr351@gmail.com>" \
     org.opencontainers.image.licenses="MIT" \
-    org.opencontainers.image.url="https://addons.community" \
+    org.opencontainers.image.url="https://github.com/${BUILD_REPOSITORY}" \
     org.opencontainers.image.source="https://github.com/${BUILD_REPOSITORY}" \
     org.opencontainers.image.documentation="https://github.com/${BUILD_REPOSITORY}/blob/main/README.md" \
     org.opencontainers.image.created=${BUILD_DATE} \
     org.opencontainers.image.revision=${BUILD_REF} \
     org.opencontainers.image.version=${BUILD_VERSION}
-    MQTT_HOST=$(bashio::services mqtt "host")
-    MQTT_USER=$(bashio::services mqtt "username")
-    MQTT_PASSWORD=$(bashio::services mqtt "password")
