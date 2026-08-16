@@ -2,24 +2,26 @@ from pathlib import Path
 from unittest.mock import MagicMock
 
 from fastapi.testclient import TestClient
-from fastapi.templating import Jinja2Templates
 
-import app as app_module
+from app import create_app
 from storage import UserStorage
 
 
-def _make_client(tmp_path, monkeypatch):
+def _make_client(tmp_path):
     test_storage = UserStorage(data_dir=str(tmp_path))
     templates_dir = Path(__file__).resolve().parents[1] / "templates"
-    monkeypatch.setattr(app_module, "storage", test_storage)
-    monkeypatch.setattr(app_module, "templates", Jinja2Templates(directory=str(templates_dir)))
-    monkeypatch.setattr(app_module.mqtt_handler, "start", MagicMock())
-    monkeypatch.setattr(app_module.mqtt_handler, "stop", MagicMock())
-    return TestClient(app_module.app, root_path="/api/hassio_ingress/test")
+    mqtt_handler = MagicMock()
+    app = create_app(
+        storage=test_storage,
+        mqtt_handler=mqtt_handler,
+        templates_dir=str(templates_dir),
+        api_key="",
+    )
+    return TestClient(app, root_path="/api/hassio_ingress/test"), test_storage
 
 
-def test_dashboard_form_actions_include_ingress_root_path(tmp_path, monkeypatch):
-    client = _make_client(tmp_path, monkeypatch)
+def test_dashboard_form_actions_include_ingress_root_path(tmp_path):
+    client, _ = _make_client(tmp_path)
 
     response = client.get("/")
 
@@ -27,8 +29,8 @@ def test_dashboard_form_actions_include_ingress_root_path(tmp_path, monkeypatch)
     assert 'action="http://testserver/api/hassio_ingress/test/users/add"' in response.text
 
 
-def test_add_user_redirect_preserves_ingress_root_path(tmp_path, monkeypatch):
-    client = _make_client(tmp_path, monkeypatch)
+def test_add_user_redirect_preserves_ingress_root_path(tmp_path):
+    client, _ = _make_client(tmp_path)
 
     response = client.post(
         "/users/add",
@@ -40,9 +42,9 @@ def test_add_user_redirect_preserves_ingress_root_path(tmp_path, monkeypatch):
     assert response.headers["location"] == "http://testserver/api/hassio_ingress/test/"
 
 
-def test_delete_user_redirect_preserves_ingress_root_path(tmp_path, monkeypatch):
-    client = _make_client(tmp_path, monkeypatch)
-    user = app_module.storage.add_user("Alice", "1234")
+def test_delete_user_redirect_preserves_ingress_root_path(tmp_path):
+    client, storage = _make_client(tmp_path)
+    user = storage.add_user("Alice", "1234")
 
     response = client.post(f"/users/{user['id']}/delete", follow_redirects=False)
 
