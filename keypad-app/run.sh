@@ -10,6 +10,8 @@ export MQTT_PASSWORD
 export HA_EVENT_TOPIC
 export API_KEY
 export INGRESS_PATH
+export APP_BUILD_VERSION
+export APP_BUILD_REF
 
 LOG_LEVEL=$(bashio::config 'log_level')
 MQTT_TOPIC_PREFIX=$(bashio::config 'mqtt_topic_prefix')
@@ -33,5 +35,7 @@ else
 fi
 
 bashio::log.info "Starting Keypad Manager..."
+bashio::log.info "Image build version: ${APP_BUILD_VERSION:-unknown}"
+bashio::log.info "Image build ref: ${APP_BUILD_REF:-unknown}"
 cd /app || exit 1
 exec python3 app.py
