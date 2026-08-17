@@ -52,3 +52,6 @@ LABEL \
     org.opencontainers.image.created=${BUILD_DATE} \
     org.opencontainers.image.revision=${BUILD_REF} \
     org.opencontainers.image.version=${BUILD_VERSION}
+
+# Start the add-on service entrypoint.
+CMD ["/run.sh"]
