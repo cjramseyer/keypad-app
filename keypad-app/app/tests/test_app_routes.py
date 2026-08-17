@@ -56,6 +56,47 @@ def test_delete_user_redirect_preserves_ingress_root_path(tmp_path):
     assert response.headers["location"] == "http://testserver/api/hassio_ingress/test/"
 
 
+def test_update_user_redirect_preserves_ingress_root_path(tmp_path):
+    client, _, storage = _make_client(tmp_path)
+    user = storage.add_user("Alice", "1234")
+
+    response = client.post(
+        f"/users/{user['id']}/update",
+        data={"name": "Alice B", "code": "5678"},
+        follow_redirects=False,
+    )
+
+    assert response.status_code == 303
+    assert response.headers["location"] == "http://testserver/api/hassio_ingress/test/"
+    assert storage.find_user_by_code("1234") is None
+    updated = storage.find_user_by_code("5678")
+    assert updated is not None
+    assert updated["name"] == "Alice B"
+
+
+def test_disable_user_redirect_preserves_ingress_root_path(tmp_path):
+    client, _, storage = _make_client(tmp_path)
+    user = storage.add_user("Alice", "1234")
+
+    response = client.post(f"/users/{user['id']}/disable", follow_redirects=False)
+
+    assert response.status_code == 303
+    assert response.headers["location"] == "http://testserver/api/hassio_ingress/test/"
+    assert storage.find_user_by_code("1234") is None
+
+
+def test_enable_user_redirect_preserves_ingress_root_path(tmp_path):
+    client, _, storage = _make_client(tmp_path)
+    user = storage.add_user("Alice", "1234")
+    storage.set_user_enabled(user["id"], False)
+
+    response = client.post(f"/users/{user['id']}/enable", follow_redirects=False)
+
+    assert response.status_code == 303
+    assert response.headers["location"] == "http://testserver/api/hassio_ingress/test/"
+    assert storage.find_user_by_code("1234") is not None
+
+
 def test_prefixed_request_path_is_served_when_proxy_does_not_strip_ingress_path(tmp_path):
     _, raw_client, _ = _make_client(tmp_path)
 
@@ -76,3 +117,35 @@ def test_prefixed_post_redirect_preserves_ingress_root_path(tmp_path):
 
     assert response.status_code == 303
     assert response.headers["location"] == "http://testserver/api/hassio_ingress/test/"
+
+
+def test_prefixed_update_redirect_preserves_ingress_root_path(tmp_path):
+    _, raw_client, storage = _make_client(tmp_path)
+    user = storage.add_user("Alice", "1234")
+
+    response = raw_client.post(
+        f"{INGRESS_PATH}/users/{user['id']}/update",
+        data={"name": "Alice C", "code": "9999"},
+        follow_redirects=False,
+    )
+
+    assert response.status_code == 303
+    assert response.headers["location"] == "http://testserver/api/hassio_ingress/test/"
+    assert storage.find_user_by_code("1234") is None
+    updated = storage.find_user_by_code("9999")
+    assert updated is not None
+    assert updated["name"] == "Alice C"
+
+
+def test_prefixed_disable_redirect_preserves_ingress_root_path(tmp_path):
+    _, raw_client, storage = _make_client(tmp_path)
+    user = storage.add_user("Alice", "1234")
+
+    response = raw_client.post(
+        f"{INGRESS_PATH}/users/{user['id']}/disable",
+        follow_redirects=False,
+    )
+
+    assert response.status_code == 303
+    assert response.headers["location"] == "http://testserver/api/hassio_ingress/test/"
+    assert storage.find_user_by_code("1234") is None

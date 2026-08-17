@@ -77,3 +77,16 @@ def test_event_published_to_both_topics(tmp_path):
     topics = [call[0][0] for call in handler.client.publish.call_args_list]
     assert any("event" in t for t in topics)
     assert any("homeassistant" in t for t in topics)
+
+
+def test_valid_code_updates_user_last_used_timestamp(tmp_path):
+    handler, storage = _make_handler(tmp_path)
+    storage.add_user("Alice", "1234")
+
+    before = storage.get_users()[0]["last_used_at"]
+    assert before is None
+
+    handler._handle_code("front-door", "1234")
+
+    after = storage.get_users()[0]["last_used_at"]
+    assert after is not None

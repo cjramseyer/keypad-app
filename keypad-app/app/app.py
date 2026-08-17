@@ -106,6 +106,18 @@ def create_app(
             raise HTTPException(status_code=404, detail="User not found")
         return RedirectResponse(url=str(request.url_for("dashboard")), status_code=303)
 
+    @app.post("/users/{user_id}/enable")
+    async def enable_user(request: Request, user_id: str):
+        if not resolved_storage.set_user_enabled(user_id, True):
+            raise HTTPException(status_code=404, detail="User not found")
+        return RedirectResponse(url=str(request.url_for("dashboard")), status_code=303)
+
+    @app.post("/users/{user_id}/disable")
+    async def disable_user(request: Request, user_id: str):
+        if not resolved_storage.set_user_enabled(user_id, False):
+            raise HTTPException(status_code=404, detail="User not found")
+        return RedirectResponse(url=str(request.url_for("dashboard")), status_code=303)
+
     # JSON API endpoints — protected by API key when api_key option is set
     @app.get("/api/users", dependencies=[Depends(require_api_key)])
     async def api_list_users():
