@@ -21,6 +21,9 @@ def test_get_users_excludes_code(tmp_path):
     users = s.get_users()
     assert len(users) == 1
     assert "code" not in users[0]
+    assert users[0]["enabled"] is True
+    assert users[0]["created_at"] is not None
+    assert users[0]["last_used_at"] is None
 
 
 def test_find_user_by_correct_code(tmp_path):
@@ -69,6 +72,35 @@ def test_update_user_code(tmp_path):
 def test_update_nonexistent_user_returns_none(tmp_path):
     s = _make_storage(tmp_path)
     assert s.update_user("no-such-id", name="X", code=None) is None
+
+
+def test_mark_user_used_updates_last_used_timestamp(tmp_path):
+    s = _make_storage(tmp_path)
+    user = s.add_user("Alice", "1234")
+    users_before = s.get_users()
+    assert users_before[0]["last_used_at"] is None
+
+    assert s.mark_user_used(user["id"]) is True
+
+    users_after = s.get_users()
+    assert users_after[0]["last_used_at"] is not None
+
+
+def test_mark_user_used_nonexistent_returns_false(tmp_path):
+    s = _make_storage(tmp_path)
+    assert s.mark_user_used("missing") is False
+
+
+def test_disabled_user_code_is_rejected(tmp_path):
+    s = _make_storage(tmp_path)
+    user = s.add_user("Alice", "1234")
+    assert s.set_user_enabled(user["id"], False) is True
+    assert s.find_user_by_code("1234") is None
+
+
+def test_set_user_enabled_nonexistent_returns_false(tmp_path):
+    s = _make_storage(tmp_path)
+    assert s.set_user_enabled("missing", True) is False
 
 
 def test_history_entry_has_timestamp(tmp_path):

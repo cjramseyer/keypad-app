@@ -32,13 +32,33 @@ class UserStorage:
         with open(self._history_path, "w") as f:
             json.dump(self._history, f, indent=2)
 
+    @staticmethod
+    def _now_iso() -> str:
+        return datetime.now(timezone.utc).isoformat()
+
     def get_users(self) -> list:
-        return [{"id": u["id"], "name": u["name"]} for u in self._users.values()]
+        users = []
+        for user in self._users.values():
+            users.append({
+                "id": user["id"],
+                "name": user["name"],
+                "enabled": user.get("enabled", True),
+                "created_at": user.get("created_at"),
+                "last_used_at": user.get("last_used_at"),
+            })
+        return users
 
     def add_user(self, name: str, code: str) -> dict:
         user_id = str(uuid.uuid4())
         hashed = bcrypt.hashpw(code.encode(), bcrypt.gensalt()).decode()
-        self._users[user_id] = {"id": user_id, "name": name, "code": hashed}
+        self._users[user_id] = {
+            "id": user_id,
+            "name": name,
+            "code": hashed,
+            "enabled": True,
+            "created_at": self._now_iso(),
+            "last_used_at": None,
+        }
         self._save_users()
         return {"id": user_id, "name": name}
 
@@ -52,6 +72,20 @@ class UserStorage:
         self._save_users()
         return {"id": user_id, "name": self._users[user_id]["name"]}
 
+    def mark_user_used(self, user_id: str) -> bool:
+        if user_id not in self._users:
+            return False
+        self._users[user_id]["last_used_at"] = self._now_iso()
+        self._save_users()
+        return True
+
+    def set_user_enabled(self, user_id: str, enabled: bool) -> bool:
+        if user_id not in self._users:
+            return False
+        self._users[user_id]["enabled"] = enabled
+        self._save_users()
+        return True
+
     def delete_user(self, user_id: str) -> bool:
         if user_id not in self._users:
             return False
@@ -62,6 +96,8 @@ class UserStorage:
     def find_user_by_code(self, code: str) -> Optional[dict]:
         for user in self._users.values():
             try:
+                if not user.get("enabled", True):
+                    continue
                 if bcrypt.checkpw(code.encode(), user["code"].encode()):
                     return {"id": user["id"], "name": user["name"]}
             except Exception:
@@ -69,7 +105,7 @@ class UserStorage:
         return None
 
     def add_history_entry(self, entry: dict):
-        entry["timestamp"] = datetime.now(timezone.utc).isoformat()
+        entry["timestamp"] = self._now_iso()
         self._history.insert(0, entry)
         self._history = self._history[:1000]  # keep last 1000 entries
         self._save_history()

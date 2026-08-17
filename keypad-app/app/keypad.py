@@ -54,6 +54,7 @@ class KeypadMQTT:
     def _handle_code(self, device_id: str, code: str):
         user = self.storage.find_user_by_code(code)
         if user:
+            self.storage.mark_user_used(user["id"])
             logger.info("Valid code entered by '%s' on device %s", user["name"], device_id)
             payload = json.dumps({
                 "event_type": "keypad_code_entered",
